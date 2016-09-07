@@ -2,6 +2,7 @@ module Webcore
   module ApplicationHelper
 ########################
 	  def get_crumbs()
+	  	return if !@crumbs
 	    items = @crumbs.stringify_keys.map do |title,url|
 	        atag = url ? content_tag(:a, title, {href: url}) : title
 	        content_tag(:li, atag.html_safe, class: (!url ? "active":"")) 
