@@ -1,6 +1,13 @@
 module Webcore
   module ApplicationHelper
 ########################
+          def title_field(f, name, options={})
+          	options[:class] = '' unless options[:class]
+          	options[:class] += ' input-lg'
+
+          	text_field(f,name,options)
+          end
+
 	  def get_crumbs()
 	  	return if !@crumbs
 	    items = @crumbs.stringify_keys.map do |title,url|
@@ -37,6 +44,14 @@ module Webcore
 	      opts = {class: opts}
 	    end
 	    link_to((icon+" "+title).html_safe,url,opts)
+	  end
+
+	  def back_link(title, url, options={})
+
+	    options[:class] = '' unless options[:class]
+	    options[:class] += " btn btn-default"
+	    
+	    glink_to("chevron-left",title, url, options)
 	  end
 
 	  def add_link(title =nil, url=nil, options={})
