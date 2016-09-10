@@ -209,3 +209,8 @@ body {
 	{
 		margin-left: 2em; 
 	}
+
+body > nav.navbar
+{
+	margin-bottom: 0px;
+}

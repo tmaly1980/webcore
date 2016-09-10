@@ -1,0 +1,14 @@
+<% notice do |notice_msg| %>
+	<%= render 'webcore/flash_msg', {message: notice_msg, className: 'notice'} %>
+<% end %>
+<% alert do |alert_msg| %>
+	<%= render 'webcore/flash_msg', {message: alert_msg, className: 'warning'} %>
+<% end %>
+
+<% flash.each do |type, msg| -%>
+	<%= render 'webcore/flash_msg', {message: msg, className: type } %>
+<% end -%>
+
+<% validation_errors.each do |msg| %>
+	<%= render 'webcore/flash_msg', {message: msg, className: 'danger' } %>
+<%end%>

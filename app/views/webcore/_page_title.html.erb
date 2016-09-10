@@ -1,0 +1,28 @@
+<div id="page_title_row" class='page-header'>
+	<div class="pull-right controls">
+	<%
+		# access-level based blocks, passed via 
+		# render 'webcore/page_title', {controls: [true,'admin','user','volunteer']}
+		control_blocks = controls.try(:count) ? controls : [true]
+		control_blocks.each do |key|
+			controls = nil
+			case key
+			when true # All users, logged in or not
+				controls = yield :title_controls
+			when 'user' # Only signed in users
+				controls = yield :user_title_controls if (user_signed_in?) 
+			else # specific users: admin, volunteer, etc - check for block named such IF user has flag set
+				sym = (key+"_title_controls").to_sym
+				controls = yield sym if (user_signed_in? && current_user.try((key+"?").to_sym))
+			end
+			%>
+			<%= controls %>
+			<%
+		end
+	%>
+	</div>
+	<% if(@page_title) %>
+		<h3 id='page_title'><%= @page_title %></h3>
+	<% end %>
+</div>
+<div class="clear"></div>

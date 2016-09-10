@@ -1,0 +1,26 @@
+/* Sensible layout defaults for all themes and pages */
+#content
+{
+	padding: 20px;
+}
+
+#main #navbar,
+#admin_navbar
+{
+	margin-bottom: 0px;
+}
+#main #header
+{
+	position: relative;
+	padding: 0px;
+	padding: 1em 0em;
+}
+#page_title_row
+{
+	margin: 10px;
+	margin-top: 25px;
+}
+#main .breadcrumb
+{
+	margin-bottom: 0px;
+}

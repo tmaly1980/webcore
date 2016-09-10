@@ -1,12 +1,27 @@
 module Webcore
   module ApplicationHelper
-########################
-          def title_field(f, name, options={})
-          	options[:class] = '' unless options[:class]
-          	options[:class] += ' input-lg'
 
-          	text_field(f,name,options)
-          end
+	#################################
+	# View Helpers
+
+	def validation_errors
+		return [] unless thingData && thingData.errors.any?
+		thingData.errors.full_messages
+	end
+
+	def title_field(f, name, options={})
+		options[:class] = '' unless options[:class]
+		options[:class] += ' input-lg'
+
+		text_field(f,name,options)
+	end
+
+	def content_field(f, name, options={})
+		#options[:class] = '' unless options[:class]
+		# XXX TODO rich text editor
+
+		text_area(f,name,options)
+	end
 
 	  def get_crumbs()
 	  	return if !@crumbs
@@ -196,17 +211,17 @@ module Webcore
 	  end
 
 	  def span(className='')
-	    "<span class='#{className}'></span>"
+	    ("<span class='#{className}'></span>").html_safe
 	  end
 
 	  def fa(faw)
-	    "<i class='fa fa-"+faw+"'></i>"
+	    ("<i class='fa fa-"+faw+"'></i>").html_safe
 	  end
 
 	  def g(glyph)
-	    "<span class='glyphicon glyphicon-"+glyph+"'></span>"
+	    ("<span class='glyphicon glyphicon-"+glyph+"'></span>").html_safe
 	  end
 
-######################
+#################################
 	end
 end
