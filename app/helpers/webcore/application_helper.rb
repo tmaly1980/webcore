@@ -3,6 +3,16 @@ module Webcore
 
 	#################################
 	# View Helpers
+	def page_photo_edit(f,data=nil) # Caller STILL needs to define #PagePhotoId as hidden object, for update
+		data = thingData unless data;
+		render partial: 'webcore/page_photos/edit_wrapper', locals: { form: f, page_photo: data.try(:page_photo) }
+	end
+
+	def page_photo_view(data=nil)
+		data = thingData unless data;
+		render partial: 'webcore/page_photos/view', locals: { page_photo: data.try(:page_photo) }
+	end
+
 	def display_date(field)
 		content_tag(:p, field.mond, class: 'date') # Standardize format with CSS
 	end
@@ -36,14 +46,27 @@ module Webcore
 		# XXX TODO rich text editor
 		#options[:rows] = 25 unless options[:rows]
 		options[:hide_label] = true
-		options[:class] = options[:class].to_s + " redactor"
-
-		f.text_area(name,options)
+		options[:class] = options[:class].to_s + " editor"
+		script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
+		f.text_area(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
 	end
 
 	def save_button(f)
 		f.submit class: 'btn btn-success'
 	end
+
+	def browser_title
+      title_parts = []
+      if @browser_title
+      	title_parts.push @browser_title
+      elsif @page_title
+      	title_parts.push @page_title
+      end
+      if(@currentSite.try(:title))
+      	title_parts.push(@currentSite.title)
+      end
+      title_parts.join(" | ")
+  	end
 
 	  def get_crumbs()
 	  	return if !@crumbs
@@ -164,14 +187,21 @@ module Webcore
 	    title = g("trash") + " "+title
 
 	    if(!url)
-	    # XXX TODO figure out how works with method..
-	      url = { :action => 'destroy', :id => thingData['id'] }
+	      url = thingData
 	    end
 
+	    options[:title] = "Delete "+thing
+	    options[:class] = ' btn btn-danger' unless options[:class] 
+	    options[:method] = 'delete' # Gets working properly
+		options[:confirm] = "Are you sure you want to remove this "+thing+"?"
+	    
+	    link_to(title.html_safe, url, options)
+	    #	form_class: 'inline button_to'){ title.html_safe }
+	    #
 	    # Uses a mini-form. Form needs to be inline and confirm needs to halt if cancel.
-	    button_to(url, :method => 'delete', class: 'btn btn-danger', 
-	    	data: { confirm: "Are you sure you want to remove this "+thing+"?" },
-	    	form_class: 'inline button_to'){ title.html_safe }
+	    #button_to(url, :method => 'delete', class: options[:class],
+	    #	data: { confirm: "Are you sure you want to remove this "+thing+"?" },
+	    #	form_class: 'inline button_to'){ title.html_safe }
 	  end
 
 	  # Remove escaping.

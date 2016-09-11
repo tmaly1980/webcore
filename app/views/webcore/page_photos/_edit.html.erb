@@ -1,9 +1,18 @@
 <!-- show in parent form -->
-<div id='PagePhoto'>
-	<% if(page_photo.blank?) %>
-		<%= link_to(image_tag("add-a-picture.png"), "/webcore/page_photos/new", class: "dialog") %>
+<div id='PagePhoto' class='center_align'>
+	<% if(page_photo.blank? || !page_photo.photo_file_name || !page_photo.try(:id)) %>
+		<%= link_to(image_tag("webcore/add-a-picture.png"), "/webcore/page_photos/new", class: "dialog") %>
 	<% else %>
-		PHOTO GOES HERE
-		<%= page_photo.to_yaml %>
+		<%= image_tag(page_photo.photo.url(:medium), class: 'border maxwidth100p') %>
+
+		<div class='padding5'>
+			<%= glink_to("camera","", webcore.edit_page_photo_path(page_photo), title: "Update Photo", class: " dialog btn btn-primary btn-sm") %>
+				&nbsp;
+			<!--		XXX TODO need to 'update' container, respond to json?  HOW TO PASS data-update? -->
+			<%= delete_link("", webcore.page_photo_path(page_photo), "data-update" => "PagePhoto", remote: false, class: "btn btn-danger btn-sm")  %>
+		</div>
+		<script>
+		$('#PagePhotoId').val('<%= page_photo.try(:id) %>');
+		</script>
 	<% end %>
 </div>

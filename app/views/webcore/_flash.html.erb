@@ -4,7 +4,7 @@
 	className = 'warning' if ['alert'].include? type
 %>
 <div class="alert alert-<%= className %>">
-	<%= message.html_safe %>
+	<%= message.to_s.html_safe %>
 </div>
 <% end -%>
 

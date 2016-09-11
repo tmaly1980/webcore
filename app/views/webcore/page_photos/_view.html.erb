@@ -1,0 +1,6 @@
+<!-- show in parent form -->
+<% if(!page_photo.blank? && (url = page_photo.photo.url(:medium))) %>
+<div id='PagePhoto' class='center_align'>
+		<%= image_tag(url, class: 'border maxwidth100p') %>
+</div>
+<% end %>

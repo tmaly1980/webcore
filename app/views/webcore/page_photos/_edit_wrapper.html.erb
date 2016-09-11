@@ -1,0 +1,2 @@
+<%= form.text_field("page_photo_id", { hide_label: true, style: 'display: none;', id: 'PagePhotoId', value: page_photo.try(:id) }) %>
+<%= render partial: 'webcore/page_photos/edit', locals: { page_photo: page_photo } %>
