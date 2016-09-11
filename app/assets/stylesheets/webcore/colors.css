@@ -66,7 +66,7 @@ a.color.white:hover
 .white { color: #FFF !important; }
 .black { color: #000 !important; }
 
-.semiwhitebg { padding: 5px; background-color: #FFFFFF; opacity: 0.8; filter:alpha(opacity: 80); -moz-opacity: 0.8; }
+.semiwhitebg { padding: 5px; background-color: #FFFFFF; opacity: 0.8; }
 .bluebg { padding: 5px; background-color: #002458 !important; }
 .tealbg { padding: 5px; background-color: #3BB19D !important; }
 .whitebg { padding: 5px; background-color: #FFFFFF !important; }
@@ -82,7 +82,7 @@ a.color.white:hover
 .lightorangebg { padding: 5px; background-color: #FFAA44 !important; }
 .lightgreybg { padding: 5px; background-color: #F0F0F0 !important; }
 .greybg { padding: 5px; background-color: #DDDDDD !important; }
-.semigreybg { padding: 5px; background-color: #DDDDDD !important; opacity: 0.8; filter:alpha(opacity: 80); -moz-opacity: 0.8; }
+.semigreybg { padding: 5px; background-color: #DDDDDD !important; opacity: 0.8; }
 .darkgreybg { padding: 5px; background-color: #999999 !important; }
 
 .lightgreybg > hr { border-color: #999; }

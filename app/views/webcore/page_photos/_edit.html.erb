@@ -1,0 +1,9 @@
+<!-- show in parent form -->
+<div id='PagePhoto'>
+	<% if(page_photo.blank?) %>
+		<%= link_to(image_tag("add-a-picture.png"), "/webcore/page_photos/new", class: "dialog") %>
+	<% else %>
+		PHOTO GOES HERE
+		<%= page_photo.to_yaml %>
+	<% end %>
+</div>

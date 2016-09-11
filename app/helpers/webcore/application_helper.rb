@@ -3,24 +3,46 @@ module Webcore
 
 	#################################
 	# View Helpers
+	def display_date(field)
+		content_tag(:p, field.mond, class: 'date') # Standardize format with CSS
+	end
 
 	def validation_errors
 		return [] unless thingData && thingData.errors.any?
 		thingData.errors.full_messages
 	end
 
-	def title_field(f, name, options={})
+	def title_field(f, name='title', options={})
 		options[:class] = '' unless options[:class]
 		options[:class] += ' input-lg'
+		options[:hide_label] = true
+		options[:placeholder] = ucthing+' Title' unless options[:placeholder]
 
-		text_field(f,name,options)
+		f.text_field(name,options)
 	end
 
-	def content_field(f, name, options={})
+	def summary_field(f, name='summary', options={})
+		options[:rows] = 6 unless options[:rows]
+		options[:placeholder] = ucfirstthing+' summary... (optional)'
+		options[:class] ||= 'bold double'
+		options[:hide_label] ||= true
+		options["data-maxlength"] = 250
+
+		f.text_area name, options
+	end
+
+	def content_field(f, name='content', options={})
 		#options[:class] = '' unless options[:class]
 		# XXX TODO rich text editor
+		#options[:rows] = 25 unless options[:rows]
+		options[:hide_label] = true
+		options[:class] = options[:class].to_s + " redactor"
 
-		text_area(f,name,options)
+		f.text_area(name,options)
+	end
+
+	def save_button(f)
+		f.submit class: 'btn btn-success'
 	end
 
 	  def get_crumbs()
@@ -45,8 +67,7 @@ module Webcore
 	      url = url_for(action: 'edit')
 	    end
 
-	    options[:class] = '' unless options[:class]
-	    options[:class] += " btn btn-primary"
+	    options[:class] = options[:class].to_s + " btn btn-primary"
 	    #options.class += " btn btn-success"
 	    # hmmm, need to allow for html in title...
 	    
@@ -71,7 +92,7 @@ module Webcore
 
 	  def add_link(title =nil, url=nil, options={})
 	    if(!title)
-	      title = 'Add '+ucthing
+	      title = 'Add'# '+ucthing
 	    end
 
 	    if(!url)
@@ -90,15 +111,14 @@ module Webcore
 
 	  def edit_link(title =nil, url=nil, options={})
 	    if(!title)
-	      title = 'Edit '+ucthing
+	      title = 'Edit'# '+ucthing
 	    end
 
 	    if(!url)
 	      url = url_for(action: 'edit', id: thingData['id'])
 	    end
 
-	    options[:class] = '' unless options[:class]
-	    options[:class] += " btn btn-warning"
+	    options[:class] = options[:class].to_s + " btn btn-warning"
 	    #options.class += " btn btn-success"
 	    # hmmm, need to allow for html in title...
 
@@ -107,15 +127,14 @@ module Webcore
 
 	  def view_link(title =nil, url=nil, options={})
 	    if(!title)
-	      title = 'View '+ucthing
+	      title = 'View'# '+ucthing
 	    end
 
 	    if(!url)
 	      url = url_for(action: 'show', id: thingData['id'])
 	    end
 
-	    options[:class] = '' unless options[:class]
-	    options[:class] += " btn btn-primary"
+	    options[:class] = options[:class].to_s + " btn btn-default"
 
 	    glink_to("file",title, url, options)
 	  end
@@ -139,23 +158,20 @@ module Webcore
 
 	  def delete_link(title =nil, url=nil, options={})
 	    if(!title)
-	      title = 'Delete '+ucthing
+	      title = 'Delete'# '+ucthing
 	    end
 
 	    title = g("trash") + " "+title
 
 	    if(!url)
 	    # XXX TODO figure out how works with method..
-	      url = url_for( method: 'delete', action: 'destroy', id: thingData['id'])
+	      url = { :action => 'destroy', :id => thingData['id'] }
 	    end
 
-	    options[:class] = '' unless options[:class]
-	    options[:class] += " btn btn-danger"
-	    #options.class += " btn btn-success"
-	    # hmmm, need to allow for html in title...
-	    options['confirm'] = "Are you sure you want to remove this "+thing+"?" unless (options['confirm'] || options['confirm'] === false)
-
-	    button_to(url, options){ title.html_safe }
+	    # Uses a mini-form. Form needs to be inline and confirm needs to halt if cancel.
+	    button_to(url, :method => 'delete', class: 'btn btn-danger', 
+	    	data: { confirm: "Are you sure you want to remove this "+thing+"?" },
+	    	form_class: 'inline button_to'){ title.html_safe }
 	  end
 
 	  # Remove escaping.
@@ -200,6 +216,10 @@ module Webcore
 
 	  def thing
 	    controller.model_name.underscore.humanize.downcase
+	  end
+
+	  def ucfirstthing
+	  	thing.capitalize
 	  end
 
 	  def ucthing

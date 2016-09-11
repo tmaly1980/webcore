@@ -6,11 +6,4 @@ require "webcore/core_extensions/time_with_zone"
 #require "webcore/core_extensions/form_builder"
 
 module Webcore
-  # Your code goes here...
-
 end
-
-#ActiveSupport.on_load(:action_view) do
-#  include Webcore::Helper
-#end
-

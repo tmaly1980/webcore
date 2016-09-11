@@ -1,5 +1,5 @@
 module Webcore
-  class ApplicationRecord < ActiveRecord::Base
+  class WebcoreRecord < ::ApplicationRecord
     self.abstract_class = true
   end
 end

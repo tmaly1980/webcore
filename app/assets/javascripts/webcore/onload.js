@@ -4,6 +4,13 @@
 
 	$(document).ready(function() {
 
+		// Textarea maxlength
+		$('[data-maxlength]').each(function() {
+			var text = this;
+			var maxLength = $(text).data('maxlength');
+			$(text).maxlength({showFeedback: true, max: maxLength}); /* Text area */
+		});
+
 		$('.dropdown.hover').hover(function() {
 			$(this).find("> .dropdown-menu").show();
 		}, function() {

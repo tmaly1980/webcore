@@ -1,5 +1,5 @@
 module Webcore
-  class ApplicationController < ActionController::Base
+  class WebcoreController < ApplicationController
     protect_from_forgery with: :exception
   end
 end

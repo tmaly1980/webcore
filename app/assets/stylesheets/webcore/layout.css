@@ -17,10 +17,39 @@
 }
 #page_title_row
 {
-	margin: 10px;
-	margin-top: 25px;
+	margin: 0px;
+	margin-top: 10px;
 }
 #main .breadcrumb
 {
 	margin-bottom: 0px;
+}
+
+/* common objects */
+#content .date
+{
+	font-style: italic;
+	display: block;
+	padding: 10px;
+}
+
+#content .summary
+{
+	font-weight: bold;
+	line-height: 2em;
+	margin: 10px 0px;
+	min-height: 50px;
+}
+
+#content .content
+{
+	margin: 10px 0px;
+	max-width: 600px;
+	min-height: 100px;
+}
+
+#content .index .title
+{
+	font-weight: bold;
+	font-size: 1.2em;
 }
