@@ -1,7 +1,18 @@
 /* Sensible layout defaults for all themes and pages */
-#content
+#content_row, .widget
 {
-	padding: 20px;
+	background-color: white;
+	border: solid #ccc 1px;
+	border-radius: 5px;
+}
+#content, #sidebar
+{
+	padding: 1em;
+}
+
+#sidebar
+{
+	background-color: #EEE;
 }
 
 #main #navbar,
@@ -20,6 +31,13 @@
 	margin: 0px;
 	margin-top: 10px;
 }
+
+#page_title
+{
+	margin-top: 0px;
+}
+
+
 #main .breadcrumb
 {
 	margin-bottom: 0px;
@@ -40,6 +58,11 @@
 	margin: 10px 0px;
 	min-height: 50px;
 }
+#content .widget .summary
+{
+	line-height: 1em;
+	margin: 5px 0px;
+}
 
 #content .content
 {
@@ -48,8 +71,30 @@
 	min-height: 100px;
 }
 
-#content .index .title
+#content .index .title,
+#content .widget .title
 {
 	font-weight: bold;
 	font-size: 1.2em;
+}
+
+.widget > div
+{
+	padding: 1em;
+}
+
+.widget > h4
+{
+	margin: 0;
+	padding: 0.5em;
+}
+.widget img
+{
+	max-width: 95%;
+	padding: 10px 0px;
+}
+
+#content .widget .date
+{
+	padding: 0px;
 }

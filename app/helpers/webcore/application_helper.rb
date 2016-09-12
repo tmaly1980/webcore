@@ -51,8 +51,8 @@ module Webcore
 		f.text_area(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
 	end
 
-	def save_button(f)
-		f.submit class: 'btn btn-success'
+	def save_button(f,text = nil)
+		f.submit text, class: 'btn btn-success'
 	end
 
 	def browser_title
@@ -141,7 +141,7 @@ module Webcore
 	      url = url_for(action: 'edit', id: thingData['id'])
 	    end
 
-	    options[:class] = options[:class].to_s + " btn btn-warning"
+	    options[:class] = "btn btn-warning"  unless options[:class]
 	    #options.class += " btn btn-success"
 	    # hmmm, need to allow for html in title...
 
@@ -157,7 +157,7 @@ module Webcore
 	      url = url_for(action: 'show', id: thingData['id'])
 	    end
 
-	    options[:class] = options[:class].to_s + " btn btn-default"
+	    options[:class] = " btn btn-default" unless options[:class]
 
 	    glink_to("file",title, url, options)
 	  end
@@ -171,10 +171,7 @@ module Webcore
 	      url = url_for(action: 'index')
 	    end
 
-	    options[:class] = '' unless options[:class]
-	    options[:class] += " btn btn-primary"
-	    #options.class += " btn btn-success"
-	    # hmmm, need to allow for html in title...
+	    options[:class] = "btn btn-primary" unless options[:class]
 
 	    glink_to("chevron-left",title, url, options)
 	  end

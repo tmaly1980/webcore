@@ -23,6 +23,26 @@ body {
 .zindex1000 { z-index: 1000; }
 .zindex5000 { z-index: 5000; }
 
+/* get cols to do full height for  bg colors etc */
+body .fullheight_cols /* added to container-fluid */
+{
+	display: table;
+	width: 100%;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.fullheight_cols > .row { 
+	height: 100%;
+	display: table-row;
+}
+
+.fullheight_cols > .row > *
+{
+	float: none !important;
+	display: table-cell;
+ }
+
 
 .absbottom { position: absolute; bottom: 0px; }
 
