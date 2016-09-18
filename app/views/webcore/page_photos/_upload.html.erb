@@ -1,56 +1,14 @@
 <div class='form margin25 padding10 border'>
 <%= bootstrap_form_for @page_photo, signed: false, html: { :id => 'PagePhotoUploadForm', :multipart => true } do |f| %>
 
-<div id='PagePhotoUploadError' style='display: none;' class='alert alert-info'></div>
-<div id='PagePhotoUploadProgress' style='display: none;' class='progress'>
-	<div class='progress-bar progress-bar-success progress-bar-striped active width100p'> &nbsp; </div>
-</div>
-
 <!-- file field start -->
-<%= f.file_field :photo, accept: 'image/*', hide_label: true, id: 'PagePhotoUpload', XXXmultiple: 'XXXmultiple' %>
+<%= f.file_field :photo, "data-upload": "/webcore/page_photos", "data-update": "#PagePhoto", accept: 'image/*', hide_label: true, id: 'PagePhotoUpload', XXXmultiple: 'XXXmultiple' %>
 <!-- file field end -->
 <% end %>
 </div>
 
 <script>
 $(document).ready(function() {
-/*	$('#PagePhotoUpload').change(function()
-	{
-		$('#PagePhotoUploadForm').submit();
-	})
-*/
 	$.dialogtitle("Upload Photo");
-	$('#PagePhotoUpload').fileupload({
-		url: "/webcore/page_photos",
-		dataType: 'json',
-		type: 'POST',
-		add: function(e,data) {
-			$('#PagePhotoUploadError').html("").hide();
-			$('#PagePhotoUploadProgress').show();
-			data.submit();
-		},
-		fail: function(e, data) {
-			console.log("FAIL");
-			console.log(data);
-			
-			$('#PagePhotoUploadProgress').hide();
-		},
-		done: function(e, data) {
-			console.log(data.result);
-			$('#PagePhotoUploadProgress').hide();
-			$('#PagePhotoUploadError').html('').hide();
-			if(data.result.error)
-			{
-				$('#PagePhotoUploadError').html(data.result.error).show();
-				console.log("ERROR="+data.result.error)
-			} else if(data.result.html) {
-				$('#PagePhoto').html(data.result.html);
-				$.dialogclose();
-			}
-
-
-		}
-	});
-	/**/
 });
 </script>

@@ -117,9 +117,15 @@
 		}
 		$.getDialog('modal').setButtons(buttonsOut).getModalFooter().show();
 	};
-	$.dialogclose = function()
+	$.fn.dialogclose = function()
 	{
-		$.getDialog('modal').close();
+		var id = $(this).attr('id');
+		$.getDialog(id).close();
+	};
+	$.dialogclose = function(id)
+	{
+		if(!id) { id = 'modal'; }
+		$.getDialog(id).close();
 	};
 
 	///////////////////////
@@ -340,7 +346,7 @@
 			$.ajax({
 				url: url,
 				data: options,
-				type: "POST",
+				type: "GET", // "POST", // Thankfully rails passes parameters all the same, and links more likely GET
 				beforeSend: function(xhr) { if(options.update) { xhr.setRequestHeader("X-Update", options.update); } },
 				success: function(response) { 
 					$.ajaxResponse(response, options, src);

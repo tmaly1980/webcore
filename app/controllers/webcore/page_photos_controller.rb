@@ -51,7 +51,7 @@ class PagePhotosController < Webcore::WebcoreController
       format.json { 
           render :json => {
             error: error,
-            html: (!error ? render_to_string(partial: "edit.html.erb", locals: { page_photo: @page_photo }) : nil)
+            html: (!error ? render_to_string(partial: "edit_thumbs.html.erb", locals: { page_photo: @page_photo }) : nil)
           }
         }
     end

@@ -22,10 +22,18 @@ module Webcore
 		thingData.errors.full_messages
 	end
 
+	def progress(text="&nbsp;",percent=100,id='progress',hidden=true)
+		("<div id='"+id+"' "+(hidden ? " style='display:none;'":"")+ " class='progress'>"+
+			"<div class='progress-bar progress-bar-success progress-bar-striped active' style='width: "+percent.to_s+"%;'> "+
+			text+" </div>"+
+		"</div>").html_safe
+	end
+
 	def title_field(f, name='title', options={})
 		options[:class] = '' unless options[:class]
 		options[:class] += ' input-lg'
 		options[:hide_label] = true
+		options[:required] = 'required'
 		options[:placeholder] = ucthing+' Title' unless options[:placeholder]
 
 		f.text_field(name,options)
@@ -68,7 +76,7 @@ module Webcore
       title_parts.join(" | ")
   	end
 
-	  def get_crumbs()
+	  def get_crumbs() # either call crumbs(hash) or set @crumbs
 	  	return if !@crumbs
 	    items = @crumbs.stringify_keys.map do |title,url|
 	        atag = url ? content_tag(:a, title, {href: url}) : title
@@ -171,7 +179,7 @@ module Webcore
 	      url = url_for(action: 'index')
 	    end
 
-	    options[:class] = "btn btn-primary" unless options[:class]
+	    options[:class] = "btn btn-default" unless options[:class]
 
 	    glink_to("chevron-left",title, url, options)
 	  end

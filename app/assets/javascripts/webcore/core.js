@@ -1,5 +1,16 @@
 // core.js
 (function($) {
+	// support data-* prefixing extraction (shared among module)
+	// $('p:dataStartsWith(foo-bar)') => <p data-foo-bar-whatever='stuff'/>
+	jQuery.extend(jQuery.expr[':'], { 
+	  "dataStartsWith" : function(el, i, p, n) {  
+	    var pCamel = p[3].replace(/-([a-z])/ig, function(m,$1) { return $1.toUpperCase(); });
+	    return Object.keys(el.dataset).some(function(i, v){
+	      return i.indexOf(pCamel) > -1;
+	    });
+	  }
+	});
+
 	$.boo = function() { console.log("BOO!"); };
 
 
