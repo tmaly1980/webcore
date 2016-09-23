@@ -63,8 +63,10 @@
 					console.log(options);
 					console.log("HTML="+data.result.html);
 
-					if(data.result.html)
+					if(data.result.redirect)
 					{
+						window.location = data.result.redirect;
+					} else if(data.result.html) {
 						var update = null;
 						if(update = options.update) //  Where JSON .html results go, if anywhere.
 						{
