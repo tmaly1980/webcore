@@ -7,6 +7,23 @@ module Webcore
 		("<label class='btn btn-success btn-file'>"+label+ f.file_field_without_bootstrap(field, params).html_safe+"</label>").html_safe
 	end
 
+	def alertbox(text,className='info')
+		("<div class='margin10 alert alert-"+className+"'>"+text+"</div>").html_safe
+	end
+
+	def info(text)
+		alertbox(text,'info')
+	end
+	def success(text)
+		alertbox(text,'success')
+	end
+	def danger(text)
+		alertbox(text,'danger')
+	end
+	def warning(text)
+		alertbox(text,'warning')
+	end
+
 
 	#############
 	def page_photo_edit(f,data=nil) # Caller STILL needs to define #PagePhotoId as hidden object, for update

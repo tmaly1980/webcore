@@ -15,9 +15,9 @@
 		var url = options.upload;
 
 		// Add progressbar and error box, if needed
-		var container = $(file).parent();
+		var container = $(file).closest('div, form');
 		var progress = $(container).find(".progress");
-		var messager = $(container).find(".alert");
+		var messager = $(container).find(".alert .uploader");
 
 		if(!progress.size())
 		{
@@ -29,7 +29,7 @@
 		}
 		if(!messager.size())
 		{
-			messager = $("<div style='display: none;' class='alert alert-danger'></div>");
+			messager = $("<div style='display: none;' class='uploader alert alert-danger'></div>");
 			$(container).prepend(messager);
 		}
 
