@@ -3,4 +3,5 @@ Webcore::Engine.routes.draw do
 
 	resources :page_photos, path: '/page_photos'
 
+	# ...
 end
