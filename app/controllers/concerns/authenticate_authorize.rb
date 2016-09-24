@@ -3,10 +3,10 @@ module Concerns
 		extend ActiveSupport::Concern
 
 		included do
-		  before_action :authenticate_and_authorize!
+		  #before_action :authenticate_and_authorize!
 
 		  def authenticate_and_authorize!
-		    if private_methods.try(:include?, params[:action])
+		    if private_methods.try(:include?, params[:action]) || private_methods.try(:include?, '*')
 		      authenticate_user! # devise auth
 		    end
 
@@ -16,20 +16,26 @@ module Concerns
 		  end
 
 		  # For now, assume there are admins and non-admins
-		  define_method :is_authorized? do # Per controller/action, check current_user.admin? etc
-		    if admin_methods.try(:include?, params[:action])
-		      current_user.try(:admin?) || current_user.try(:manager?)
-		    end
-		    true
-		  end
+		unless method_defined? :is_authorized?
+			  define_method :is_authorized? do # Per controller/action, check current_user.admin? etc
+			    if admin_methods.try(:include?, params[:action]) || admin_methods.try(:include?, '*')
+			      current_user.try(:admin?) || current_user.try(:manager?)
+			    end
+			    true
+			  end
+		end
 
+		unless method_defined? :private_methods
 		  define_method :private_methods do # If specific controller wants to block something else, it can alter.
-		      ['new','delete','destroy','edit','create']
+		      #['new','delete','destroy','edit','create']
 		  end
+		end
 
+		unless method_defined? :admin_methods
 		  define_method :admin_methods do # Define per controller; Only admins (NOT volunteers) can go here
 		    []
 		  end
+		end
 
 			
 		end
