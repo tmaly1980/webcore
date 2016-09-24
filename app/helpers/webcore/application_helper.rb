@@ -3,6 +3,12 @@ module Webcore
 
 	#################################
 	# View Helpers
+	def upload_button(f, label, field, params)
+		("<label class='btn btn-success btn-file'>"+label+ f.file_field_without_bootstrap(field, params).html_safe+"</label>").html_safe
+	end
+
+
+	#############
 	def page_photo_edit(f,data=nil) # Caller STILL needs to define #PagePhotoId as hidden object, for update
 		data = thingData unless data;
 		render partial: 'webcore/page_photos/edit_wrapper', locals: { form: f, page_photo: data.try(:page_photo) }
