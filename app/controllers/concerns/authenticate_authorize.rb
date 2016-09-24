@@ -6,6 +6,8 @@ module Concerns
 		  #before_action :authenticate_and_authorize!
 
 		  def authenticate_and_authorize!
+		  	logger.debug private_methods.join(";")
+
 		    if private_methods.try(:include?, params[:action]) || private_methods.try(:include?, '*')
 		      authenticate_user! # devise auth
 		    end
@@ -16,7 +18,7 @@ module Concerns
 		  end
 
 		  # For now, assume there are admins and non-admins
-		unless method_defined? :is_authorized?
+		unless method_defined? is_authorized?
 			  define_method :is_authorized? do # Per controller/action, check current_user.admin? etc
 			    if admin_methods.try(:include?, params[:action]) || admin_methods.try(:include?, '*')
 			      current_user.try(:admin?) || current_user.try(:manager?)
@@ -26,8 +28,9 @@ module Concerns
 		end
 
 		unless method_defined? :private_methods
+			logger.debug "POO PRIVATE"
 		  define_method :private_methods do # If specific controller wants to block something else, it can alter.
-		      #['new','delete','destroy','edit','create']
+		      ['new','delete','destroy','edit','create']
 		  end
 		end
 
