@@ -18,7 +18,7 @@ module Concerns
 		  end
 
 		  # For now, assume there are admins and non-admins
-		unless method_defined? is_authorized?
+		unless method_defined? :is_authorized?
 			  define_method :is_authorized? do # Per controller/action, check current_user.admin? etc
 			    if admin_methods.try(:include?, params[:action]) || admin_methods.try(:include?, '*')
 			      current_user.try(:admin?) || current_user.try(:manager?)
