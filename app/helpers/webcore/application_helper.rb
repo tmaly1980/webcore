@@ -144,6 +144,13 @@ module Webcore
 	    glink_to("chevron-left",title, url, options)
 	  end
 
+	  def add_link!(title=nil,url=nil,options={})
+	  	if(!title)
+	  		title = 'Add '+ucthing;
+	  	end
+	  	add_link(title,url,options)
+	  end
+
 	  def add_link(title =nil, url=nil, options={})
 	    if(!title)
 	      title = 'Add'# '+ucthing
@@ -161,6 +168,13 @@ module Webcore
 	    
 
 	    glink_to("plus",title, url, options)
+	  end
+
+  	  def edit_link!(title=nil,url=nil,options={})
+	  	if(!title)
+	  		title = 'Edit '+ucthing;
+	  	end
+	  	edit_link(title,url,options)
 	  end
 
 	  def edit_link(title =nil, url=nil, options={})
@@ -206,6 +220,14 @@ module Webcore
 
 	    glink_to("chevron-left",title, url, options)
 	  end
+
+	  def delete_link!(title=nil,url=nil,options={})
+	  	if(!title)
+	  		title = 'Delete '+ucthing;
+	  	end
+	  	delete_link(title,url,options)
+	  end
+
 
 	  def delete_link(title =nil, url=nil, options={})
 	    if(!title)
@@ -298,6 +320,10 @@ module Webcore
 
 	  def g(glyph)
 	    ("<span class='glyphicon glyphicon-"+glyph+"'></span>").html_safe
+	  end
+
+	  def max_width(id,width)
+	  	("<style>#"+id.to_s+" { max-width: "+width.to_s+"px; }</style>").html_safe
 	  end
 
 #################################

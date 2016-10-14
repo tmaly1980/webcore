@@ -2,6 +2,9 @@
 #content_row, .widget
 {
 	background-color: white;
+}
+.bordered
+{
 	border: solid #ccc 1px;
 	border-radius: 5px;
 }

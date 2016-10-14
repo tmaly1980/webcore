@@ -6,7 +6,7 @@ module Concerns
 		  before_action :authenticate_and_authorize!
 
 		  def authenticate_and_authorize!
-		  	logger.debug "PRIMETH="+private_methods.join(";")
+		  	#logger.debug "PRIMETH="+private_methods.join(";")
 
 		    if user_methods.try(:include?, params[:action]) || user_methods.try(:include?, '*')
 		      authenticate_user! # devise auth
