@@ -24,6 +24,74 @@ module Webcore
 		alertbox(text,'warning')
 	end
 
+	def spanify(text) # only if content exists
+		return if text.empty?
+		("<span>"+text+"</span>").html_safe
+	end
+
+	def nl2br(content)
+		content.gsub(/(?:\n\r?|\r\n?)/, '<br/>')
+	end
+
+	##################
+	# Date formatting - user.created_at.strftime(format_mond)
+	def format_mond
+		"%b %-d" # Jun 13
+	end
+	def format_mdy
+		"%m/%d/%y" # 10/24/80
+	end
+	def format_mdyear
+		"%m/%d/%Y" # 10/24/1980
+	end
+
+
+	def years(dob)
+		years = now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
+	end
+
+	def age(dob) # Shows months if less than a year
+		return nil if dob.empty?
+	  now = Time.now.utc.to_date
+
+	  years_months = date_diff(dob,now)
+	  years = years_months[0]
+	  months = years_months[1]
+
+	  if(years == 1)
+	  	return years + " year old"
+	  elsif(years > 1)
+	  	return years + " years old"
+	  elsif (months == 1)
+	  	return months + " month old"
+	  elsif (months > 1)
+	  	return months + " months old"
+	  else
+	  	return "< 1 month old"
+	  end
+	end
+
+	def date_diff(date1,date2)
+  		month = (date2.year * 12 + date2.month) - (date1.year * 12 + date1.month)
+  		month.divmod(12)
+	end
+
+	def array_to_hash(array) # Takes plain list and turns into both keys and values (as-is), for dropdowns
+		Hash[ array.map { |k| [k,k] } ]
+	end
+
+	def yesnobool
+		['No','Yes']
+	end
+	def yesno
+		{'No'=> 'No','Yes'=>'Yes'}
+	end
+	def yesnoblank
+		{'': ' - ', 'No'=>'No','Yes'=>'Yes'}
+	end
+	def yesnona
+		{'': '- N/A -', 'No'=>'No','Yes'=>'Yes'}
+	end
 
 	#############
 	def page_photo_edit(f,data=nil) # Caller STILL needs to define #PagePhotoId as hidden object, for update
@@ -55,31 +123,31 @@ module Webcore
 	def title_field(f, name='title', options={})
 		options[:class] = '' unless options[:class]
 		options[:class] += ' input-lg'
-		options[:hide_label] = true
+		options[:label] = false
 		options[:required] = 'required'
 		options[:placeholder] = ucthing+' Title' unless options[:placeholder]
 
-		f.text_field(name,options)
+		f.input(name,options)
 	end
 
 	def summary_field(f, name='summary', options={})
 		options[:rows] = 6 unless options[:rows]
 		options[:placeholder] = ucfirstthing+' summary... (optional)'
 		options[:class] ||= 'bold double'
-		options[:hide_label] ||= true
+		options[:label] = false
 		options["data-maxlength"] = 250
 
-		f.text_area name, options
+		f.input name, options
 	end
 
 	def content_field(f, name='content', options={})
 		#options[:class] = '' unless options[:class]
 		# XXX TODO rich text editor
 		#options[:rows] = 25 unless options[:rows]
-		options[:hide_label] = true
+		options[:label] = false
 		options[:class] = options[:class].to_s + " editor"
 		script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
-		f.text_area(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
+		f.input(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
 	end
 
 	def save_button(f,text = nil)
@@ -325,6 +393,81 @@ module Webcore
 	  def max_width(id,width)
 	  	("<style>#"+id.to_s+" { max-width: "+width.to_s+"px; }</style>").html_safe
 	  end
+
+
+
+#################################
+	def months
+		[
+		'01'=>'01 - January',
+		'02'=>'02 - February',
+		'03'=>'03 - March',
+		'04'=>'04 - April',
+		'05'=>'05 - May',
+		'06'=>'06 - June',
+		'07'=>'07 - July',
+		'08'=>'08 - August',
+		'09'=>'09 - September',
+		'10'=>'10 - October',
+		'11'=>'11 - November',
+		'12'=>'12 - December',
+		]
+	end
+	def states
+		[
+	    'AL'=>'Alabama',
+	    'AK'=>'Alaska',
+	    'AZ'=>'Arizona',
+	    'AR'=>'Arkansas',
+	    'CA'=>'California',
+	    'CO'=>'Colorado',
+	    'CT'=>'Connecticut',
+	    'DE'=>'Delaware',
+	    'DC'=>'District of Columbia',
+	    'FL'=>'Florida',
+	    'GA'=>'Georgia',
+	    'HI'=>'Hawaii',
+	    'ID'=>'Idaho',
+	    'IL'=>'Illinois',
+	    'IN'=>'Indiana',
+	    'IA'=>'Iowa',
+	    'KS'=>'Kansas',
+	    'KY'=>'Kentucky',
+	    'LA'=>'Louisiana',
+	    'ME'=>'Maine',
+	    'MD'=>'Maryland',
+	    'MA'=>'Massachusetts',
+	    'MI'=>'Michigan',
+	    'MN'=>'Minnesota',
+	    'MS'=>'Mississippi',
+	    'MO'=>'Missouri',
+	    'MT'=>'Montana',
+	    'NE'=>'Nebraska',
+	    'NV'=>'Nevada',
+	    'NH'=>'New Hampshire',
+	    'NJ'=>'New Jersey',
+	    'NM'=>'New Mexico',
+	    'NY'=>'New York',
+	    'NC'=>'North Carolina',
+	    'ND'=>'North Dakota',
+	    'OH'=>'Ohio',
+	    'OK'=>'Oklahoma',
+	    'OR'=>'Oregon',
+	    'PA'=>'Pennsylvania',
+	    'RI'=>'Rhode Island',
+	    'SC'=>'South Carolina',
+	    'SD'=>'South Dakota',
+	    'TN'=>'Tennessee',
+	    'TX'=>'Texas',
+	    'UT'=>'Utah',
+	    'VT'=>'Vermont',
+	    'VA'=>'Virginia',
+	    'WA'=>'Washington',
+	    'WV'=>'West Virginia',
+	    'WI'=>'Wisconsin',
+	    'WY'=>'Wyoming',
+		]
+	end
 
 #################################
 	end

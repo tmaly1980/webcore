@@ -101,3 +101,8 @@
 {
 	padding: 0px;
 }
+
+#content_row
+{
+	margin: 0 auto; /* allows centering with custom width */
+}

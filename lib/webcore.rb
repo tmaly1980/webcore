@@ -1,4 +1,5 @@
 require "webcore/engine"
+require "webcore/controller"
 
 # Now monkey patch core stuff with our magic.
 # so @article.created_at.mdy works  instead of mdy(@article.created_at)
