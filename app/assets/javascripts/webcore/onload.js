@@ -96,5 +96,23 @@
 		$('#navbar .navbar-nav').autofit_nav();
 	});
 
+	$(document).ready(function() { // disable submits until required fields filled...
+		$('form').each(function() {
+			var form = $(this);
+
+		    form.find(':input[type="submit"]').prop('disabled', true); // disable submit btn
+		    form.find(':input[required]').change(function() { // monitor all inputs for changes
+		        var disable = false;
+		        form.find(':input[required]').not('[type="submit"]').each(function(i, el) { // test all inputs for values
+		          	//console.log(el.name+"="+el.value);
+		            if ($.trim(el.value) === '') {
+		                disable = true; // disable submit if any of them are still blank
+		            }
+		        });
+		        form.find(':input[type="submit"]').prop('disabled', disable);
+		    });
+		});
+    });
+
 
 })(jQuery);

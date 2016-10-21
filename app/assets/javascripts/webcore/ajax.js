@@ -411,6 +411,48 @@
 
 			return false;
 		});
+
+		$('[data-validate-url]').each(function() { // json validate a single field, ie uniqueness
+			var field = this;
+			$(field).changeup(function() {
+				var value = $(field).val();
+				if (!value) { return; } // not blank checks
+
+				var url = $(field).data('validate-url');
+				// console.log(url);
+				// console.log(field);
+				// console.log($(field).closest('form'));
+				var formData = $(field).closest('form').serializeObject();
+
+				// remove error
+				var wrapper = $(field).closest('.form-group');
+				wrapper.removeClass('has-error has-success');
+				var helpBlock = $(wrapper).find('.help-block.validator');
+				if(!helpBlock.length)
+				{
+					helpBlock = $("<div class='validator help-block alert'></div>")
+					$(wrapper).append(helpBlock);
+				}
+				console.log(helpBlock);
+				helpBlock.removeClass('alert-danger alert-success').addClass('alert-info')
+					.html("<i class='fa fa-spin fa-spinner'></i> Checking...").show();
+
+				$.post(url, formData, function(response) {
+					if(response.error)
+					{
+						wrapper.addClass('has-error');
+						helpBlock.removeClass('alert-info').addClass('alert-danger').html("<i class='fa fa-exclamation-circle'></i> "+response.error).show();
+					} else if (response.message) { // info message
+						helpBlock.html("<i class='fa fa-info-circle'></i> "+response.message).show();
+					} else if (response.success) { // happy message
+						wrapper.addClass('has-success');
+						helpBlock.removeClass('alert-info').addClass('alert-success').html("<i class='fa fa-check-circle'></i> "+response.success).show();
+					} else {
+						helpBlock.hide(); // good with no response
+					}
+				}, 'json');
+			}, 2000);
+		});
 	});
 
 })(jQuery);

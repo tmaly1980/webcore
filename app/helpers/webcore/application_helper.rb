@@ -120,39 +120,111 @@ module Webcore
 		"</div>").html_safe
 	end
 
-	def title_field(f, name='title', options={})
-		options[:class] = '' unless options[:class]
-		options[:class] += ' input-lg'
-		options[:label] = false
-		options[:required] = 'required'
-		options[:placeholder] = ucthing+' Title' unless options[:placeholder]
-
-		f.input(name,options)
+	def merge_options(options={}, adding)
+		SimpleForm::FormBuilder::merge_options(options,adding)
 	end
 
-	def summary_field(f, name='summary', options={})
-		options[:rows] = 6 unless options[:rows]
-		options[:placeholder] = ucfirstthing+' summary... (optional)'
-		options[:class] ||= 'bold double'
-		options[:label] = false
-		options["data-maxlength"] = 250
+	#ActionView::Helpers::FormBuilder.class_eval do
+	SimpleForm::FormBuilder.class_eval do
+	# HELL YEAH, love rails
 
-		f.input name, options
+		def merge_options(options={}, adding) # Handles appending to class, etc
+	        if adding
+	          adding.merge(options) do |key, oldval, newval|
+	            case key.to_s
+	            when "class"
+	              Array(oldval) + Array(newval)
+	            when "data", "aria"
+	              oldval.merge(newval)
+	            else
+	              newval
+	            end
+	          end
+	        else
+	          options
+	        end
+		end
+		
+
+		def title(name='title', options={})
+			options[:class] = '' unless options[:class]
+			options[:class] += ' input-lg'
+			options[:label] = false
+			options[:required] = 'required'
+			options[:placeholder] = ucthing+' Title' unless options[:placeholder]
+
+			self.input(name,options)
+		end
+
+		def summary(name='summary', options={})
+			options[:rows] = 6 unless options[:rows]
+			options[:placeholder] = ucfirstthing+' summary... (optional)'
+			options[:class] ||= 'bold double'
+			options[:label] = false
+			options["data-maxlength"] = 250
+
+			self.input name, options
+		end
+
+		def content(name='content', options={})
+			#options[:class] = '' unless options[:class]
+			# XXX TODO rich text editor
+			#options[:rows] = 25 unless options[:rows]
+			options[:label] = false
+			options[:class] = options[:class].to_s + " editor"
+			script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
+			self.input(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
+		end
+
+
+		def save(text = nil, options={})
+			self.success text, options
+		end
+		def success(text = nil, options={})
+			options = merge_options(options, { class: 'btn btn-success'} )
+			self.submit text, options
+		end
+		def primary(text = nil, options={})
+			options = merge_options(options, { class: 'btn btn-primary'} )
+			self.submit text, options
+		end
+		def info(text = nil, options={})
+			options = merge_options(options, { class: 'btn btn-info'} )
+			self.submit text, options
+		end
+		def warning(text = nil, options={})
+			options = merge_options(options, { class: 'btn btn-warning'} )
+			self.submit text, options
+		end
+		def danger(text = nil, options={})
+			options =merge_options(options, { class: 'btn btn-danger'} )
+			self.submit text, options
+		end
+		def field(field, options = {}) # Wrapper for input fields, supporting 'div' to style class and 'class' to style inputs
+			if options[:class]
+				options[:input_html] = {} unless options[:input_html]
+				options[:input_html][:class] = options[:class]
+				options.delete(:class)
+			end
+			if options[:div]
+				options[:wrapper_html] = {} unless options.try(:wrapper_html)
+				options[:wrapper_html][:class] = options[:div]
+				options.delete(:div)
+			end
+
+			self.input(field,options)
+		end
 	end
 
-	def content_field(f, name='content', options={})
-		#options[:class] = '' unless options[:class]
-		# XXX TODO rich text editor
-		#options[:rows] = 25 unless options[:rows]
-		options[:label] = false
-		options[:class] = options[:class].to_s + " editor"
-		script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
-		f.input(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
-	end
-
-	def save_button(f,text = nil)
-		f.submit text, class: 'btn btn-success'
-	end
+	# def input_group(f,field, options={})
+	# 	f.input :hostname, wrapper: :vertical_input_group, options do 
+	# 		(options.before ? "<span class='input-group-addon'>"+options.before+"</span>":"") + 
+	#         f.input_field fie, class: "form-control right_align", required: true %>
+			
+	# 	end
+ #      <span class="input-group-addon">.<%= @default_domain %></span>
+    	
+	# end
 
 	def browser_title
       title_parts = []
@@ -204,10 +276,25 @@ module Webcore
 	    link_to((icon+" "+title).html_safe,url,opts)
 	  end
 
-	  def back_link(title, url, options={})
+	  def gblink_to(glyph, title=nil,url=nil,opts={},btnclass='primary')
+	    opts[:class] = '' unless opts[:class]
+	    opts[:class] += " btn btn-"+btnclass
+
+	  	glink_to(glyph, title,url,opts)
+	  end	  
+
+	  def blink_to(title=nil,url=nil,opts={},btnclass='primary')
+	    opts[:class] = '' unless options[:class]
+	    opts[:class] += " btn btn-"+btnclass
+
+	  	link_to(title,url,opts)
+	  end
+
+	  def back_link(title='Back', url=nil, options={})
 
 	    options[:class] = '' unless options[:class]
 	    options[:class] += " btn btn-default"
+	    url = { action: 'index' } unless url
 	    
 	    glink_to("chevron-left",title, url, options)
 	  end
@@ -294,6 +381,12 @@ module Webcore
 	  		title = 'Delete '+ucthing;
 	  	end
 	  	delete_link(title,url,options)
+	  end
+
+	  def logout(title='Logout',url=nil, options={})
+		    options[:method] = 'delete' # Gets working properly
+		    url = "/users/logout" unless url
+		    link_to(title.html_safe, url, options)
 	  end
 
 

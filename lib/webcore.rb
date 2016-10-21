@@ -1,3 +1,8 @@
+# Load dependencies from gemspec so we don't need to mention in app's
+Gem.loaded_specs['webcore'].dependencies.each do |d|
+ require d.name
+end
+
 require "webcore/engine"
 require "webcore/controller"
 
