@@ -13,3 +13,4 @@
 //= require_tree .
 //= require jquery-fileupload/basic
 //= require lightbox-bootstrap
+//= require social-share-button

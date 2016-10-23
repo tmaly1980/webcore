@@ -47,6 +47,7 @@
 			);
 		});
  		if(selected) { $(dropdown).val(selected); } // Preserve if still valid. 
+ 		else { $(dropdown).val(''); } // empty value
 
 		return dropdown;
 	};

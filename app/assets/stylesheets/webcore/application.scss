@@ -17,3 +17,16 @@
  */
 @import "font-awesome-sprockets";
 @import "font-awesome";
+
+@import "social-share-button";
+$size: 36px;
+.social-share-button {
+  .ssb-icon {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: $size $size;
+    display: inline-block;
+    height: $size;
+    width: $size;
+  }
+}

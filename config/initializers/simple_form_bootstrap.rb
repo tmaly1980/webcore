@@ -7,14 +7,14 @@ SimpleForm.setup do |config|
   config.custom_inputs_namespaces << "Webcore::CustomForm"
   # Adds wrappers for passing 'class'
 
-  config.wrappers :vertical_input_group, tag: 'div', class: 'form-group', error_class: 'has-error' do |b|
+  config.wrappers :vertical_input_group, tag: 'div', error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
     b.use :label, class: 'control-label'
 
-    b.wrapper tag: 'div' do |ba|
-      ba.wrapper tag: 'div', class: 'input-group col-sm-12' do |append|
-        append.use :input, class: 'form-control'
+    b.wrapper tag: 'div', class: 'form-group' do |ba|
+      ba.wrapper tag: 'div', class: 'input-group' do |baz|
+        baz.use :input, class: 'form-control'
       end
       ba.use :error, wrap_with: { tag: 'span', class: 'help-block' }
       ba.use :hint,  wrap_with: { tag: 'p', class: 'help-block' }
@@ -26,10 +26,8 @@ SimpleForm.setup do |config|
     b.use :placeholder
     b.use :label, class: 'col-sm-3 control-label'
 
-    b.wrapper tag: 'div', class: 'col-sm-9' do |ba|
-      ba.wrapper tag: 'div', class: 'input-group col-sm-12' do |append|
-        append.use :input, class: 'form-control'
-      end
+    b.wrapper tag: 'div', class: 'col-sm-9 input-group' do |ba|
+        ba.use :input, class: 'form-control'
       ba.use :error, wrap_with: { tag: 'span', class: 'help-block' }
       ba.use :hint,  wrap_with: { tag: 'p', class: 'help-block' }
     end
@@ -177,37 +175,37 @@ SimpleForm.setup do |config|
     boolean: :vertical_boolean,
     datetime: :multi_select,
     date: :multi_select,
-    time: :multi_select
+    time: :multi_select,
   }
 end
 
 # Add a few new things too...
-module SimpleForm
-  class FormBuilder < ActionView::Helpers::FormBuilder
+# module SimpleForm
+#   class FormBuilder < ActionView::Helpers::FormBuilder
 
-    def primary(value=nil,options={})
-      options[:class] = '' unless options[:class]
-      options[:class] += ' btn btn-primary'
-      submit value, options
-    end
+#     def primary(value=nil,options={})
+#       options[:class] = '' unless options[:class]
+#       options[:class] += ' btn btn-primary'
+#       submit value, options
+#     end
 
-    def success(value=nil,options={})
-      options[:class] = '' unless options[:class]
-      options[:class] += ' btn btn-success'
-      submit value, options
-    end    
-    def danger(value=nil,options={})
-      options[:class] = '' unless options[:class]
-      options[:class] += ' btn btn-danger'
-      submit value, options
-    end
-    def warning(value=nil,options={})
-      options[:class] = '' unless options[:class]
-      options[:class] += ' btn btn-warning'
-      submit value, options
-    end
+#     def success(value=nil,options={})
+#       options[:class] = '' unless options[:class]
+#       options[:class] += ' btn btn-success'
+#       submit value, options
+#     end    
+#     def danger(value=nil,options={})
+#       options[:class] = '' unless options[:class]
+#       options[:class] += ' btn btn-danger'
+#       submit value, options
+#     end
+#     def warning(value=nil,options={})
+#       options[:class] = '' unless options[:class]
+#       options[:class] += ' btn btn-warning'
+#       submit value, options
+#     end
 
-  end
-end
+#   end
+# end
 
 

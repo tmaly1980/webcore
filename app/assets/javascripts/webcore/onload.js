@@ -100,8 +100,12 @@
 		$('form').each(function() {
 			var form = $(this);
 
+			var required_fields = form.find(':input[required]');
+			if(!required_fields.length) { return; } // None required.
+			//console.log(required_fields.length);
+
 		    form.find(':input[type="submit"]').prop('disabled', true); // disable submit btn
-		    form.find(':input[required]').change(function() { // monitor all inputs for changes
+		    required_fields.changeup(function() { // monitor all inputs for changes
 		        var disable = false;
 		        form.find(':input[required]').not('[type="submit"]').each(function(i, el) { // test all inputs for values
 		          	//console.log(el.name+"="+el.value);
@@ -110,7 +114,7 @@
 		            }
 		        });
 		        form.find(':input[type="submit"]').prop('disabled', disable);
-		    });
+		    },500);
 		});
     });
 

@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
 
   #s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
 
+#s.add_dependency 'activerecord-session_store'
+s.add_dependency 'american_date'
 s.add_dependency 'publishable'
 s.add_dependency 'get_or_build' # fixes not needing to 'build' associations for fields_for
 s.add_dependency 'acts_as_singleton'
@@ -37,6 +39,7 @@ s.add_dependency 'cancancan'
 s.add_dependency 'acts_as_list' # Sortable
 #s.add_dependency 'passenger' # apache proxy
 s.add_dependency 'simple_form'
+s.add_dependency 'social-share-button'
 
   #s.add_development_dependency "mysql2"
 end

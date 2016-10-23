@@ -25,7 +25,7 @@ module Webcore
 	end
 
 	def spanify(text) # only if content exists
-		return if text.empty?
+		return '' if text.blank?
 		("<span>"+text+"</span>").html_safe
 	end
 
@@ -50,8 +50,17 @@ module Webcore
 		years = now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
 	end
 
+	def age!(dob)
+		adoptable_age = age(dob)
+		if(!adoptable_age)
+			'Unknown age'
+		else
+			adoptable_age
+		end
+	end
+
 	def age(dob) # Shows months if less than a year
-		return nil if dob.empty?
+	  return nil if dob.blank?
 	  now = Time.now.utc.to_date
 
 	  years_months = date_diff(dob,now)
@@ -128,6 +137,23 @@ module Webcore
 	SimpleForm::FormBuilder.class_eval do
 	# HELL YEAH, love rails
 
+	  def thing # OWN COPY
+	    #controller.model_name.underscore.humanize.downcase
+	    object_name.humanize.downcase
+	  end
+
+	  def ucfirstthing
+	  	thing.capitalize
+	  end
+
+	  def ucthing
+	    thing.split.map(&:capitalize).join(' ')
+	  end
+
+	  def ucthings
+	    ucthing.pluralize
+	  end
+
 		def merge_options(options={}, adding) # Handles appending to class, etc
 	        if adding
 	          adding.merge(options) do |key, oldval, newval|
@@ -146,34 +172,36 @@ module Webcore
 		end
 		
 
-		def title(name='title', options={})
+		def title(field='title',options={})
+			#return name
+
 			options[:class] = '' unless options[:class]
 			options[:class] += ' input-lg'
 			options[:label] = false
 			options[:required] = 'required'
 			options[:placeholder] = ucthing+' Title' unless options[:placeholder]
 
-			self.input(name,options)
+			self.field(field,options)
 		end
 
-		def summary(name='summary', options={})
+		def summary(field='summary',options={})
 			options[:rows] = 6 unless options[:rows]
 			options[:placeholder] = ucfirstthing+' summary... (optional)'
 			options[:class] ||= 'bold double'
 			options[:label] = false
 			options["data-maxlength"] = 250
 
-			self.input name, options
+			self.field field, options
 		end
 
-		def content(name='content', options={})
+		def content(field='content',options={})
 			#options[:class] = '' unless options[:class]
 			# XXX TODO rich text editor
 			#options[:rows] = 25 unless options[:rows]
 			options[:label] = false
 			options[:class] = options[:class].to_s + " editor"
 			script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
-			self.input(name,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
+			self.field(field,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
 		end
 
 
@@ -182,37 +210,98 @@ module Webcore
 		end
 		def success(text = nil, options={})
 			options = merge_options(options, { class: 'btn btn-success'} )
-			self.submit text, options
+			self.submit_cancel text, options
 		end
 		def primary(text = nil, options={})
 			options = merge_options(options, { class: 'btn btn-primary'} )
-			self.submit text, options
+			self.submit_cancel text, options
 		end
 		def info(text = nil, options={})
 			options = merge_options(options, { class: 'btn btn-info'} )
-			self.submit text, options
+			self.submit_cancel text, options
 		end
 		def warning(text = nil, options={})
 			options = merge_options(options, { class: 'btn btn-warning'} )
-			self.submit text, options
+			self.submit_cancel text, options
 		end
 		def danger(text = nil, options={})
 			options =merge_options(options, { class: 'btn btn-danger'} )
-			self.submit text, options
+			self.submit_cancel text, options
 		end
-		def field(field, options = {}) # Wrapper for input fields, supporting 'div' to style class and 'class' to style inputs
-			if options[:class]
-				options[:input_html] = {} unless options[:input_html]
-				options[:input_html][:class] = options[:class]
-				options.delete(:class)
+
+		def submit_cancel(*args, &block)
+			template.content_tag :div, :class => "form-group padding10" do
+				options = args.extract_options!
+
+				# class
+				options[:class] = [options[:class], 'btn-primary'].compact
+
+				args << options
+
+				# with cancel link
+				if cancel = options.delete(:cancel)
+					submit(*args, &block) + '&nbsp;&nbsp;'.html_safe + template.link_to('Cancel', cancel, class: 'text-danger')
+				else
+					submit(*args, &block)
+				end
 			end
-			if options[:div]
-				options[:wrapper_html] = {} unless options.try(:wrapper_html)
-				options[:wrapper_html][:class] = options[:div]
+		end
+
+		def datepicker(field, options = {})
+			options[:as] = 'string'
+			options[:class] = 'datepicker'
+			options[:size] = 12
+
+			self.field(field,options)
+		end
+
+		def form_group(field, options = {})
+			options[:wrapper] = :vertical_input_group
+			input_options = options.reject{ |k| [:wrapper, :before, :after, :div].include? k }
+			input_options[:class] = '' unless input_options[:class]
+			input_options[:class] += ' form-control'
+
+			self.field field, options do
+				str = ''
+				if options[:before]
+	      			str << "<span class='input-group-addon'>"+options[:before]+"</span>"
+				end
+
+				str << self.input_field(field, input_options)
+				
+				if options[:after]
+	      			str << "<span class='input-group-addon'>"+options[:after]+"</span>"
+				end
+				str.html_safe
+		    end
+		end
+
+		# ***** use f.field INSTEAD of f.input *****
+		# Wrapper for input fields, supporting 'div' to style class and 'class' to style inputs
+		def field(field, options = {}, &block) 
+			options[:input_html] = {} unless options[:input_html]
+			options[:prompt] = false unless options[:prompt].present? # default to no empty field.
+			
+			[:id, :size, :maxlength, :class].each do |k| # Map attributes
+				if options[k]
+					options[:input_html][k] = options[k]
+					options.delete(k)
+				end
+			end
+
+			if options[:div] === false
+				options[:wrapper] = false
+			elsif options[:div]
+				if options[:div].instance_of? Hash
+					options[:wrapper_html] = options[:div]
+				else
+					options[:wrapper_html] = {} unless options.try(:wrapper_html)
+					options[:wrapper_html][:class] = options[:div]
+				end
 				options.delete(:div)
 			end
 
-			self.input(field,options)
+			self.input(field,options, &block) 
 		end
 	end
 
@@ -225,6 +314,12 @@ module Webcore
  #      <span class="input-group-addon">.<%= @default_domain %></span>
     	
 	# end
+
+	def share(title)
+		("<div class='pull-left paddingright10'>"+
+			social_share_button_tag(title)+
+		"</div>").html_safe
+	end
 
 	def browser_title
       title_parts = []
@@ -284,7 +379,7 @@ module Webcore
 	  end	  
 
 	  def blink_to(title=nil,url=nil,opts={},btnclass='primary')
-	    opts[:class] = '' unless options[:class]
+	    opts[:class] = '' unless opts[:class]
 	    opts[:class] += " btn btn-"+btnclass
 
 	  	link_to(title,url,opts)
