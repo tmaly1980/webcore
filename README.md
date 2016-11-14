@@ -1,7 +1,17 @@
 # Webcore
 Provides basic common view/template helpers across web applications and convenience modifications (monkey patching) to SimpleForm.
 
-## Usage
+## Installation
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'webcore', :git => 'git://github.com/tmaly1980/webcore.git'
+```
+
+And then execute:
+```bash
+$ bundle
+```
 
 Simple mount the gem as an engine, and it'll automatically include it's helper, load dependencies, etc:
 
@@ -9,6 +19,7 @@ In your app's config/routes.rb:
 
 ```  mount Webcore::Engine, at: "/webcore" ```
 
+## Usage
 
 In your views, access these helpers:
 
@@ -204,17 +215,7 @@ Set wrapper div class/attributes (instead of setting deeper 'wrapper_html'):
 ``` f.input(:field, :div => "col-md-6") ```
 ``` f.input(:field, :div => { class: "col-md-6", id: 'fieldContainer' }) ```
 
-## Installation
-Add this line to your application's Gemfile:
 
-```ruby
-gem 'webcore', :git => 'git://github.com/tmaly1980/webcore.git'
-```
-
-And then execute:
-```bash
-$ bundle
-```
 
 ## Contributing
 Feel free to contribute!
