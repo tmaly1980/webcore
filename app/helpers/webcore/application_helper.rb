@@ -3,6 +3,15 @@ module Webcore
 
 	#################################
 	# View Helpers
+	def flash_class(level)
+	    case level
+	        when 'notice' then "alert alert-dismissable alert-info"
+	        when 'success' then "alert alert-dismissable alert-success"
+	        when 'error' then "alert alert-dismissable alert-danger"
+	        when 'alert' then "alert alert-dismissable alert-danger"
+	    end
+	end
+
 	def upload_button(f, label, field, params)
 		("<label class='btn btn-success btn-file'>"+label+ f.file_field_without_bootstrap(field, params).html_safe+"</label>").html_safe
 	end
@@ -68,13 +77,13 @@ module Webcore
 	  months = years_months[1]
 
 	  if(years == 1)
-	  	return years + " year old"
+	  	return years.to_s + " year old"
 	  elsif(years > 1)
-	  	return years + " years old"
+	  	return years.to_s + " years old"
 	  elsif (months == 1)
-	  	return months + " month old"
+	  	return months.to_s + " month old"
 	  elsif (months > 1)
-	  	return months + " months old"
+	  	return months.to_s + " months old"
 	  else
 	  	return "< 1 month old"
 	  end
@@ -133,177 +142,7 @@ module Webcore
 		SimpleForm::FormBuilder::merge_options(options,adding)
 	end
 
-	#ActionView::Helpers::FormBuilder.class_eval do
-	SimpleForm::FormBuilder.class_eval do
-	# HELL YEAH, love rails
 
-	  def thing # OWN COPY
-	    #controller.model_name.underscore.humanize.downcase
-	    object_name.humanize.downcase
-	  end
-
-	  def ucfirstthing
-	  	thing.capitalize
-	  end
-
-	  def ucthing
-	    thing.split.map(&:capitalize).join(' ')
-	  end
-
-	  def ucthings
-	    ucthing.pluralize
-	  end
-
-		def merge_options(options={}, adding) # Handles appending to class, etc
-	        if adding
-	          adding.merge(options) do |key, oldval, newval|
-	            case key.to_s
-	            when "class"
-	              Array(oldval) + Array(newval)
-	            when "data", "aria"
-	              oldval.merge(newval)
-	            else
-	              newval
-	            end
-	          end
-	        else
-	          options
-	        end
-		end
-		
-
-		def title(field='title',options={})
-			#return name
-
-			options[:class] = '' unless options[:class]
-			options[:class] += ' input-lg'
-			options[:label] = false
-			options[:required] = 'required'
-			options[:placeholder] = ucthing+' Title' unless options[:placeholder]
-
-			self.field(field,options)
-		end
-
-		def summary(field='summary',options={})
-			options[:rows] = 6 unless options[:rows]
-			options[:placeholder] = ucfirstthing+' summary... (optional)'
-			options[:class] ||= 'bold double'
-			options[:label] = false
-			options["data-maxlength"] = 250
-
-			self.field field, options
-		end
-
-		def content(field='content',options={})
-			#options[:class] = '' unless options[:class]
-			# XXX TODO rich text editor
-			#options[:rows] = 25 unless options[:rows]
-			options[:label] = false
-			options[:class] = options[:class].to_s + " editor"
-			script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
-			self.field(field,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
-		end
-
-
-		def save(text = nil, options={})
-			self.success text, options
-		end
-		def success(text = nil, options={})
-			options = merge_options(options, { class: 'btn btn-success'} )
-			self.submit_cancel text, options
-		end
-		def primary(text = nil, options={})
-			options = merge_options(options, { class: 'btn btn-primary'} )
-			self.submit_cancel text, options
-		end
-		def info(text = nil, options={})
-			options = merge_options(options, { class: 'btn btn-info'} )
-			self.submit_cancel text, options
-		end
-		def warning(text = nil, options={})
-			options = merge_options(options, { class: 'btn btn-warning'} )
-			self.submit_cancel text, options
-		end
-		def danger(text = nil, options={})
-			options =merge_options(options, { class: 'btn btn-danger'} )
-			self.submit_cancel text, options
-		end
-
-		def submit_cancel(*args, &block)
-			template.content_tag :div, :class => "form-group padding10" do
-				options = args.extract_options!
-
-				# class
-				options[:class] = [options[:class], 'btn-primary'].compact
-
-				args << options
-
-				# with cancel link
-				if cancel = options.delete(:cancel)
-					submit(*args, &block) + '&nbsp;&nbsp;'.html_safe + template.link_to('Cancel', cancel, class: 'text-danger')
-				else
-					submit(*args, &block)
-				end
-			end
-		end
-
-		def datepicker(field, options = {})
-			options[:as] = 'string'
-			options[:class] = 'datepicker'
-			options[:size] = 12
-
-			self.field(field,options)
-		end
-
-		def form_group(field, options = {})
-			options[:wrapper] = :vertical_input_group
-			input_options = options.reject{ |k| [:wrapper, :before, :after, :div].include? k }
-			input_options[:class] = '' unless input_options[:class]
-			input_options[:class] += ' form-control'
-
-			self.field field, options do
-				str = ''
-				if options[:before]
-	      			str << "<span class='input-group-addon'>"+options[:before]+"</span>"
-				end
-
-				str << self.input_field(field, input_options)
-				
-				if options[:after]
-	      			str << "<span class='input-group-addon'>"+options[:after]+"</span>"
-				end
-				str.html_safe
-		    end
-		end
-
-		# ***** use f.field INSTEAD of f.input *****
-		# Wrapper for input fields, supporting 'div' to style class and 'class' to style inputs
-		def field(field, options = {}, &block) 
-			options[:input_html] = {} unless options[:input_html]
-			options[:prompt] = false unless options[:prompt].present? # default to no empty field.
-			
-			[:id, :size, :maxlength, :class].each do |k| # Map attributes
-				if options[k]
-					options[:input_html][k] = options[k]
-					options.delete(k)
-				end
-			end
-
-			if options[:div] === false
-				options[:wrapper] = false
-			elsif options[:div]
-				if options[:div].instance_of? Hash
-					options[:wrapper_html] = options[:div]
-				else
-					options[:wrapper_html] = {} unless options.try(:wrapper_html)
-					options[:wrapper_html][:class] = options[:div]
-				end
-				options.delete(:div)
-			end
-
-			self.input(field,options, &block) 
-		end
-	end
 
 	# def input_group(f,field, options={})
 	# 	f.input :hostname, wrapper: :vertical_input_group, options do 
@@ -658,5 +497,187 @@ module Webcore
 	end
 
 #################################
+	end
+end
+
+#SimpleForm::FormBuilder.class_eval do
+class SimpleForm::FormBuilder
+# HELL YEAH, love rails
+
+
+  def thing # OWN COPY
+    #controller.model_name.underscore.humanize.downcase
+    object_name.humanize.downcase
+  end
+
+  def ucfirstthing
+  	thing.capitalize
+  end
+
+  def ucthing
+    thing.split.map(&:capitalize).join(' ')
+  end
+
+  def ucthings
+    ucthing.pluralize
+  end
+
+	def merge_options(options={}, adding) # Handles appending to class, etc
+        if adding
+          adding.merge(options) do |key, oldval, newval|
+            case key.to_s
+            when "class"
+              Array(oldval) + Array(newval)
+            when "data", "aria"
+              oldval.merge(newval)
+            else
+              newval
+            end
+          end
+        else
+          options
+        end
+	end
+	
+
+	def title(field='title',options={})
+		#return name
+
+		options[:class] = '' unless options[:class]
+		options[:class] += ' input-lg'
+		options[:label] = false
+		options[:required] = 'required'
+		options[:placeholder] = ucthing+' Title' unless options[:placeholder]
+
+		self.field(field,options)
+	end
+
+	def summary(field='summary',options={})
+		options[:rows] = 6 unless options[:rows]
+		options[:placeholder] = ucfirstthing+' summary... (optional)'
+		options[:class] ||= 'bold double'
+		options[:label] = false
+		options["data-maxlength"] = 250
+
+		self.field field, options
+	end
+
+	def content(field='content',options={})
+		#options[:class] = '' unless options[:class]
+		# XXX TODO rich text editor
+		#options[:rows] = 25 unless options[:rows]
+		options[:label] = false
+		options[:class] = options[:class].to_s + " editor"
+		script = content_tag(:script, ("$(document).ready(function() { $('.editor').redactor(); })").html_safe)
+		self.field(field,options)+script # using 'redactor' tag is inconsistent, sometimes doesnt load...
+	end
+
+
+	def save(text = nil, options={})
+		self.success text, options
+	end
+	def success(text = nil, options={})
+		options = merge_options(options, { class: 'btn btn-success'} )
+		self.submit_cancel text, options
+	end
+	def primary(text = nil, options={})
+		options = merge_options(options, { class: 'btn btn-primary'} )
+		self.submit_cancel text, options
+	end
+	def info(text = nil, options={})
+		options = merge_options(options, { class: 'btn btn-info'} )
+		self.submit_cancel text, options
+	end
+	def warning(text = nil, options={})
+		options = merge_options(options, { class: 'btn btn-warning'} )
+		self.submit_cancel text, options
+	end
+	def danger(text = nil, options={})
+		options =merge_options(options, { class: 'btn btn-danger'} )
+		self.submit_cancel text, options
+	end
+
+	def submit_cancel(*args, &block)
+		template.content_tag :div, :class => "form-group padding10" do
+			options = args.extract_options!
+
+			# class
+			options[:class] = [options[:class], 'btn-primary'].compact
+
+			args << options
+
+			# with cancel link
+			if cancel = options.delete(:cancel)
+				submit(*args, &block) + '&nbsp;&nbsp;'.html_safe + template.link_to('Cancel', cancel, class: 'text-danger')
+			else
+				submit(*args, &block)
+			end
+		end
+	end
+
+	def datepicker(field, options = {})
+		options[:as] = 'string'
+		options[:class] = 'datepicker'
+		options[:size] = 12
+
+		self.field(field,options)
+	end
+
+	def form_group(field, options = {})
+		options[:wrapper] = :vertical_input_group
+		input_options = options.reject{ |k| [:wrapper, :before, :after, :div].include? k }
+		input_options[:class] = '' unless input_options[:class]
+		input_options[:class] += ' form-control'
+
+		self.field field, options do
+			str = ''
+			if options[:before]
+      			str << "<span class='input-group-addon'>"+options[:before]+"</span>"
+			end
+
+			str << self.input_field(field, input_options)
+			
+			if options[:after]
+      			str << "<span class='input-group-addon'>"+options[:after]+"</span>"
+			end
+			str.html_safe
+	    end
+	end
+
+	# NO LONGER NEEDED ***** use f.field INSTEAD of f.input *****
+	# Wrapper for input fields, supporting 'div' to style class and 'class' to style inputs
+	def field(field, options = {}, &block) # just in case...
+		self.input(field,options, &block)
+
+	end
+
+	# THERE IS A WAY TO OVERWRITE input() !!!! 
+
+	original_input = instance_method(:input)
+
+	define_method :input do |field, options={}, &block|
+		options[:input_html] = {} unless options[:input_html]
+		options[:prompt] = false unless options[:prompt].present? # default to no empty field.
+		
+		[:id, :size, :maxlength, :class, :style, :onClick].each do |k| # Map attributes
+			if options[k]
+				options[:input_html][k] = options[k]
+				options.delete(k)
+			end
+		end
+
+		if options[:div] === false
+			options[:wrapper] = false
+		elsif options[:div]
+			if options[:div].instance_of? Hash
+				options[:wrapper_html] = options[:div]
+			else
+				options[:wrapper_html] = {} unless options.try(:wrapper_html)
+				options[:wrapper_html][:class] = options[:div]
+			end
+			options.delete(:div)
+		end
+
+		original_input.bind(self).(field,options, &block) 
 	end
 end

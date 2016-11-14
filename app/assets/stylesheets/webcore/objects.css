@@ -421,3 +421,8 @@ body .dropdown-menu
 body .redactor-toolbar, .redactor-dropdown {
     z-index: 500 !important;
 }
+
+.radio label,
+.checkbox label {
+	font-weight: bold;
+}

@@ -60,8 +60,9 @@
 			/* bugfix for jumping sorts when page scrolled */
 			sort: function(event, ui) {
 				//console.log(ui.position.top + " + " + $(window).scrollTop());
-				//ui.helper.css({'top' : ui.position.top + $(window).scrollTop() + 'px'});
-				
+				ui.helper.css({'top' : ui.position.top + $(window).scrollTop() + 'px'});
+				return;
+				// below doesnt work...
         			var $target = $(event.target);
         			if (!/html|body/i.test($target.offsetParent()[0].tagName)) {
             				var top = event.pageY - $target.offsetParent().offset().top - (ui.helper.outerHeight(true) / 2);
@@ -98,14 +99,14 @@
 		///console.log(options);
 
 		// ONLY bother sorting on a list with MORE than one entry...
-		$(itemswrapper).addClass('sorting');
+		// $(itemswrapper).addClass('sorting');
 
-		$(itemswrapper).find(itemsel).each(function() {
-			var item = this;
-			$(item).find('a').not('.btn').addClass('disabled');
-			$(item).find('.controls').hide();
-			//$(item).prepend("<span class='glyphicon glyphicon-resize-vertical'></span>");
-		});
+		// $(itemswrapper).find(itemsel).each(function() {
+		// 	var item = this;
+		// 	$(item).find('a').not('.btn').addClass('disabled');
+		// 	$(item).find('.controls').hide();
+		// 	//$(item).prepend("<span class='glyphicon glyphicon-resize-vertical'></span>");
+		// });
 
 		$(itemswrapper).sortable(options);
 	};

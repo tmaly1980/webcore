@@ -11,6 +11,8 @@ body {
 .bottom, .bottom0 { bottom: 0px; }
 .left0 { left: 0px; }
 .right0 { right: 0px; }
+.top5 { top: 5px; }
+.right5 { right: 5px; }
 
 .zindex0 { z-index: 0; }
 .zindex1 { z-index: 1; }

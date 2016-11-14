@@ -388,7 +388,10 @@
 			return false; // Prevent default (requires caller says 'return ajax_submit')
 		});
 
+		console.log("HEY, dialog click?");
+
 		$('body').on('click', '.dialog', function(e) {
+			console.log("CLCK DIALOG!!!!");
 			e.preventDefault();
 
 			var link = this;

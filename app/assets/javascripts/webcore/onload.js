@@ -97,15 +97,12 @@
 	});
 
 	$(document).ready(function() { // disable submits until required fields filled...
+
 		$('form').each(function() {
 			var form = $(this);
 
-			var required_fields = form.find(':input[required]');
-			if(!required_fields.length) { return; } // None required.
-			//console.log(required_fields.length);
+			form.bind('check_required', function() {
 
-		    form.find(':input[type="submit"]').prop('disabled', true); // disable submit btn
-		    required_fields.changeup(function() { // monitor all inputs for changes
 		        var disable = false;
 		        form.find(':input[required]').not('[type="submit"]').each(function(i, el) { // test all inputs for values
 		          	//console.log(el.name+"="+el.value);
@@ -114,7 +111,14 @@
 		            }
 		        });
 		        form.find(':input[type="submit"]').prop('disabled', disable);
+
+			});
+			
+		    form.find(':input[required]').not('[type="submit"]').changeup(function() { // monitor all inputs for changes
+		    	form.trigger('check_required');
 		    },500);
+		    
+	    	form.trigger('check_required'); // initialize; only disable if required is missing.
 		});
     });
 

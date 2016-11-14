@@ -7,12 +7,13 @@
 
 	$.fn.ajaxUploader = function(options) {
 		var file = this;
+		var form = $(file).closest('form');
 		if(!$(file).attr('id'))
 		{
 			$(file).attr('id', 'file'+Math.floor((Math.random() * 10000) + 9999));
 		}
 		var file_id = $(file).attr('id');
-		var url = options.upload;
+		var url = options.upload || $(form).attr('action'); // might be nested, so explicit url
 
 		// Add progressbar and error box, if needed
 		var container = $(file).closest('div, form');
@@ -78,9 +79,18 @@
 						}
 
 						// If upload is inside a modal and target is outside, close the modal.
-						var modal = $(file).closest('.modal');
+						var modal = $('#'+file_id).closest('.modal'); // not sure why but it needs ID 
+						// instead of 
+						// console.log("UP="+update);
+						// console.log("FILE=");
+						// console.log(file);
+						// console.log($('#'+file_id).closest('.modal'));
+						// console.log($('#modal input[type=file]'));
+						// console.log("MOD_SIZ="+modal.size());
+						// console.log($(update).closest('.modal').size());
 						if(update && modal.size() && !$(update).closest('.modal').size())
 						{
+							//console.log("CLOSING MODAL");
 							modal.dialogclose();
 						}
 					}

@@ -8,7 +8,7 @@ module Concerns
 
 
 			def age(dob) # Shows months if less than a year
-			  return nil if dob.blank?
+			  return nil if dob.nil?
 			  now = Time.now.utc.to_date
 
 			  years_months = date_diff(dob,now)
@@ -16,13 +16,13 @@ module Concerns
 			  months = years_months[1]
 
 			  if(years == 1)
-			  	return years + " year old"
+			  	return years.to_s + " year old"
 			  elsif(years > 1)
-			  	return years + " years old"
+			  	return years.to_s + " years old"
 			  elsif (months == 1)
-			  	return months + " month old"
+			  	return months.to_s + " month old"
 			  elsif (months > 1)
-			  	return months + " months old"
+			  	return months.to_s + " months old"
 			  else
 			  	return "< 1 month old"
 			  end
