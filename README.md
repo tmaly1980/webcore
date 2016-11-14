@@ -17,7 +17,15 @@ Simple mount the gem as an engine, and it'll automatically include it's helper, 
 
 In your app's config/routes.rb:
 
-```  mount Webcore::Engine, at: "/webcore" ```
+```  
+mount Webcore::Engine, at: "/webcore" 
+```
+
+In your app/controllers/application_controller.rb:
+
+```
+  helper Webcore::ApplicationHelper
+```
 
 ## Usage
 
