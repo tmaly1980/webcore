@@ -38,6 +38,7 @@ Success:
 Warning:
 ```
 <%= warning(text) %>
+```
 
 Danger:
 ```
